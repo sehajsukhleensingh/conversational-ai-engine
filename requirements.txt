@@ -1,0 +1,17 @@
+fastapi==0.128.7                # Latest FastAPI version for production
+uvicorn[standard]==0.34.0       # Latest stable Uvicorn server
+
+langchain==1.2.10               # Latest LangChain release on PyPI
+langchain-core==1.2.17          # Core LangChain abstractions
+langchain-community==0.4.1      # Community utilities
+langgraph==1.0.10               # LangGraph latest on PyPI
+langchain-google-genai==3.2.0   # for gemini api
+
+pydantic==2.8.2                 # Latest Pydantic v2
+python-dotenv==1.0.1            # For .env config
+
+httpx==0.27.0                   # Async HTTP client
+sse-starlette==2.1.0            # Server-sent events support
+
+tiktoken==0.12.0                # Tokenizer for LLMs
+faiss-cpu==1.13.2               # Faiss CPU vector search engine

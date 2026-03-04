@@ -3,9 +3,8 @@ from fastapi.responses import StreamingResponse
 
 from backend.schema_models.request import UsrRequest
 
-from langchain_core.messages import HumanMessage , BaseMessage
+from langchain_core.messages import HumanMessage , BaseMessage , AIMessage
 
-from backend.app.config import CONFIG
 from backend.core.chatbot import bot
 
 router = APIRouter()
@@ -24,10 +23,11 @@ def health_check():
 
 
 @router.post("/chat")
-async def chat(usr : UsrRequest , request : Request):
+async def chat(usr : UsrRequest , request : Request ):
 
     # fetch the query 
     query = usr.usr_message
+    CONFIG = usr.CONFIG
 
     try:
         # feed to chatbot
@@ -52,3 +52,29 @@ async def chat(usr : UsrRequest , request : Request):
 
 
 
+@router.get("/chat-history")
+def history(thread : str) -> list[dict[str,str]]:
+
+    try:
+        data = bot.get_state(config = {"configurable":
+                                    {"thread_id":thread}}).values["messages"]
+        
+    except Exception as e:
+        raise HTTPException(status_code=500 , detail= str(e))
+    
+    records = []
+
+    for item in data: 
+        temp = {}
+        if isinstance(item,HumanMessage):
+            temp["role"] = "user"
+            temp["content"] = item.content
+
+        elif isinstance(item,AIMessage):
+            temp["role"] = "assistant"
+            temp["content"] = item.content
+
+        records.append(temp)
+    
+    return records
+        

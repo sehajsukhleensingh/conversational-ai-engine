@@ -1,0 +1,54 @@
+from fastapi import APIRouter , HTTPException , Request
+from fastapi.responses import StreamingResponse
+
+from backend.schema_models.request import UsrRequest
+
+from langchain_core.messages import HumanMessage , BaseMessage
+
+from backend.app.config import CONFIG
+from backend.core.chatbot import bot
+
+router = APIRouter()
+
+@router.get("/health")
+def health_check():
+    try:      
+        if bot is None:
+            raise Exception(status_code=500,detail="chatbot error")
+        
+        return {"status":"healthy" , 
+                "bot":"ready"}
+
+    except Exception as e:
+        raise HTTPException(status_code=503 , detail=str(e))
+
+
+@router.post("/chat")
+async def chat(usr : UsrRequest , request : Request):
+
+    # fetch the query 
+    query = usr.usr_message
+
+    try:
+        # feed to chatbot
+        async def generator():
+            async for msg_chnk , meta in  bot.astream(
+                {"messages":[HumanMessage(content = query)]},
+                stream_mode="messages",
+                config=CONFIG):
+
+                if await request.is_disconnected():
+                    break 
+
+                if hasattr(msg_chnk,"content") and msg_chnk.content:
+                    yield f"data: {msg_chnk.content} \n\n"
+            
+            yield "event: done\ndata: END\n\n"
+ 
+        return StreamingResponse(generator(),media_type="text/event-stream")
+
+    except Exception as e: 
+        raise HTTPException(status_code=500 , detail= str(e))
+
+
+

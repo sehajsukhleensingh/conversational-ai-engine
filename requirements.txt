@@ -15,3 +15,5 @@ sse-starlette==2.1.0            # Server-sent events support
 
 tiktoken==0.12.0                # Tokenizer for LLMs
 faiss-cpu==1.13.2               # Faiss CPU vector search engine
+
+streamlit==1.55.0               # for UI page 

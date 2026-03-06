@@ -56,8 +56,9 @@ async def chat(usr : UsrRequest , request : Request ):
 def history(thread : str) -> list[dict[str,str]]:
 
     try:
-        data = bot.get_state(config = {"configurable":
-                                    {"thread_id":thread}}).values["messages"]
+        state = bot.get_state(config = {"configurable":
+                                    {"thread_id":thread}})
+        data = state.values.get("messages",[])
         
     except Exception as e:
         raise HTTPException(status_code=500 , detail= str(e))

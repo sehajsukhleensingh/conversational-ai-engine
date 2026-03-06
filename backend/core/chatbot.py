@@ -1,12 +1,13 @@
 from langgraph.graph import StateGraph , START , END
 from langgraph.graph.message import add_messages
-from langgraph.checkpoint.memory import InMemorySaver
+from langgraph.checkpoint.sqlite.aio import AsyncSqliteSaver
 
 from langchain_google_genai import ChatGoogleGenerativeAI
 from langchain_core.messages import BaseMessage , HumanMessage 
 
 from dotenv import load_dotenv
 from typing import TypedDict , Annotated 
+import aiosqlite
 
 load_dotenv()
 
@@ -26,7 +27,8 @@ def chatfunc(state : BotState):
 
     return {"messages":[llm_res]}
 
-checkpointer = InMemorySaver()
+conn = aiosqlite.connect(database="backend/data/convos.db")
+checkpointer = AsyncSqliteSaver(conn=conn)
 graph = StateGraph(BotState)
 
 graph.add_node("chat_llm",chatfunc)

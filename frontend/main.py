@@ -4,7 +4,7 @@ sys.path.append(os.path.dirname(os.path.dirname(__file__)))
 import streamlit as st 
 import requests
 from backend.app.config import Config
-
+from backend.utils.helper import Utitlity
 
 # xxxxxxxxxxxxxxxxxxxxxxxx-Utils-xxxxxxxxxxxxxxxxxxxxxxxxx
 
@@ -34,7 +34,8 @@ if "thread_id" not in st.session_state:
     st.session_state["thread_id"] = CONFIG["configurable"]["thread_id"]
 
 if "chat_threads" not in st.session_state:
-    st.session_state["chat_threads"] = []
+    threads = Utitlity.extract_threads()
+    st.session_state["chat_threads"] = threads
 
 add_thread(st.session_state["thread_id"])
 

@@ -1,4 +1,4 @@
-# Lucein – Conversational AI Engine
+# Misl – Conversational AI Engine
 
 Lucein is a stateful conversational AI system built using LangGraph, FastAPI, and Streamlit, designed to handle multi-threaded conversations with persistent memory and real-time streaming responses.
 

@@ -3,7 +3,7 @@ from backend.api.routes import router
 from fastapi.middleware.cors import CORSMiddleware
 
 app = FastAPI(
-    title="lucein" ,
+    title="misl" ,
     version="1.0.0"
 )
 

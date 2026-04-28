@@ -44,7 +44,7 @@ add_thread(st.session_state["thread_id"])
 
 #xxxxxxxxxxxxxxxxxxxxxx-SIDEBAR-xxxxxxxxxxxxxxxxxxxxxxxxxxx
 
-st.sidebar.markdown("# **lucein**")
+st.sidebar.markdown("# **misl**")
 st.sidebar.write("")
 if st.sidebar.button("new chat"):
     chat_reset()

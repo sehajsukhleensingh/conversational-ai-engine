@@ -5,3 +5,4 @@ vlucein
 __pycache__
 .ipynb_checkpoints
 testing.ipynb
+backend/data

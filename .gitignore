@@ -5,4 +5,4 @@ vmisl
 __pycache__
 .ipynb_checkpoints
 testing.ipynb
-backend/data
+backend/data/convos.db

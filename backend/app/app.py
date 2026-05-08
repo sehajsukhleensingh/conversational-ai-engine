@@ -1,11 +1,17 @@
 from fastapi import FastAPI , APIRouter
-from backend.api.routes import router 
 from fastapi.middleware.cors import CORSMiddleware
+
+from backend.api.routes import router 
+from backend.core.chatbot import build_graph
 
 app = FastAPI(
     title="misl" ,
     version="1.0.0"
 )
+
+@app.on_event("startup")
+async def startup():
+    app.state.bot = await build_graph()
 
 app.add_middleware(
     CORSMiddleware,

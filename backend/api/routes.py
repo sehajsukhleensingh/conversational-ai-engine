@@ -5,12 +5,13 @@ from backend.schema_models.request import UsrRequest
 
 from langchain_core.messages import HumanMessage , BaseMessage , AIMessage
 
-from backend.core.chatbot import bot
-
 router = APIRouter()
 
 @router.get("/health")
-def health_check():
+def health_check(request : Request):
+    
+    bot = request.app.state.bot
+
     try:      
         if bot is None:
             raise Exception(status_code=500,detail="chatbot error")
@@ -24,6 +25,8 @@ def health_check():
 
 @router.post("/chat")
 async def chat(usr : UsrRequest , request : Request ):
+
+    bot = request.app.state.bot
 
     # fetch the query 
     query = usr.usr_message
@@ -40,7 +43,7 @@ async def chat(usr : UsrRequest , request : Request ):
                 if await request.is_disconnected():
                     break 
 
-                if hasattr(msg_chnk,"content") and msg_chnk.content:
+                if isinstance(msg_chnk, AIMessage) and msg_chnk.content:
                     yield f"data: {msg_chnk.content} \n\n"
             
             yield "event: done\ndata: END\n\n"
@@ -53,8 +56,10 @@ async def chat(usr : UsrRequest , request : Request ):
 
 
 @router.get("/chat-history")
-def history(thread : str) -> list[dict[str,str]]:
+def history(thread : str , request : Request) -> list[dict[str,str]]:
 
+    bot = request.app.state.bot
+    
     try:
         state = bot.get_state(config = {"configurable":
                                     {"thread_id":thread}})

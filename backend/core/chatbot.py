@@ -3,18 +3,17 @@ from langgraph.graph.message import add_messages
 from langgraph.checkpoint.sqlite.aio import AsyncSqliteSaver
 from langgraph.prebuilt import ToolNode , tools_condition
 
-from langchain_community.tools import DuckDuckGoSearchRun
-from langchain_core.tools import tool 
+
 from langchain_openai import ChatOpenAI
 from langchain_core.messages import BaseMessage , HumanMessage , SystemMessage 
 
-from backend.core.tools import search_tool , exchange_rate
+from backend.utils.tools import search_tool , exchange_rate
 
 from dotenv import load_dotenv
 from typing import TypedDict , Annotated 
 import aiosqlite
 import os 
-import requests
+import asyncio
 
 load_dotenv()
 
@@ -37,7 +36,7 @@ llm_w_tools = llm.bind_tools(tools=tools)
 toolnode = ToolNode(tools=tools)
 
 
-def chatfunc(state : BotState):
+async def chatfunc(state : BotState):
     
     # user query 
     usr_query = state["messages"]
@@ -48,20 +47,27 @@ def chatfunc(state : BotState):
     - ALWAYS summarize tool results
     - ONLY return final, clean answers
     """) 
-    llm_res = llm_w_tools.invoke([system_message] + usr_query)
+    llm_res = await llm_w_tools.ainvoke([system_message] + usr_query)
 
     return {"messages":[llm_res]}
 
 
-conn = aiosqlite.connect(database="backend/data/convos.db") 
-checkpointer = AsyncSqliteSaver(conn=conn)
-graph = StateGraph(BotState)
+async def build_graph():
 
-graph.add_node("chat_node",chatfunc)
-graph.add_node("tools",toolnode)
+    conn = await aiosqlite.connect(database="backend/data/convos.db") 
+    checkpointer = AsyncSqliteSaver(conn=conn)
 
-graph.add_edge(START,"chat_node")
-graph.add_conditional_edges("chat_node",tools_condition)
-graph.add_edge("tools","chat_node")
+    graph = StateGraph(BotState)
 
-bot = graph.compile(checkpointer=checkpointer)
+    graph.add_node("chat_node",chatfunc)
+    graph.add_node("tools",toolnode)
+
+    graph.add_edge(START,"chat_node")
+    graph.add_conditional_edges("chat_node",tools_condition)
+    graph.add_edge("tools","chat_node")
+
+    bot = graph.compile(checkpointer=checkpointer)
+
+    return bot
+
+

@@ -68,8 +68,10 @@ for thread_id in st.session_state["chat_threads"]:
 
 # load all the old convo hist 
 for mssg in st.session_state["mssg_hist"]:
-    with st.chat_message(mssg["role"]):
-        st.markdown(mssg["content"])
+    if "role" in mssg and "content" in mssg and mssg["content"] != "":
+        with st.chat_message(mssg["role"]):
+            st.markdown(mssg["content"])
+    
 
 #xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 
@@ -91,7 +93,11 @@ if usr_input:
         json= {"usr_message":usr_input , 
                "CONFIG":{
                    "configurable":{
-                       "thread_id":st.session_state["thread_id"]}
+                       "thread_id":st.session_state["thread_id"]} , 
+                    "metadata":{
+                           "thread_id":st.session_state["thread_id"] , 
+                       }, 
+                    "run_name":"chat"
                }} , 
         stream= True
     )

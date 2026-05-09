@@ -37,7 +37,7 @@ async def build_graph():
     checkpointer = AsyncSqliteSaver(conn=conn)
 
     mcp_tools = await client.get_tools()
-    tools = [mcp_tools , search_tool , exchange_rate]
+    tools = [*mcp_tools , search_tool , exchange_rate]
 
     llm_w_tools = llm.bind_tools(tools=tools)
 

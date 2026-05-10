@@ -5,6 +5,7 @@ import streamlit as st
 import requests
 from backend.app.config import Config
 from backend.utils.helper import Utitlity
+import httpx 
 
 # xxxxxxxxxxxxxxxxxxxxxxxx-Utils-xxxxxxxxxxxxxxxxxxxxxxxxx
 
@@ -49,6 +50,30 @@ st.sidebar.write("")
 if st.sidebar.button("new chat"):
     chat_reset()
 
+file = st.sidebar.file_uploader(label="pdf",type="pdf",label_visibility="collapsed")
+if file is not None:
+    try:
+        res = requests.post(
+            url="http://127.0.0.1:8000/upload_file" , 
+            files={
+                "file":(
+                    file.name ,
+                    file,
+                    "application/pdf"
+                )
+            } , 
+            data={
+                "thread_id":st.session_state["thread_id"]
+            }
+        )
+        if res.status_code == 200:
+            st.success("file uploaded sucessfully , ask your queries related to it")
+        else:
+            st.error(f"upload failed : {res.text}")
+    except Exception as e:
+        st.error("some error occured while uploading the file")
+    
+
 st.sidebar.subheader("Old Conversations")
 for thread_id in st.session_state["chat_threads"]:
     if st.sidebar.button(thread_id,key=thread_id):
@@ -74,7 +99,6 @@ for mssg in st.session_state["mssg_hist"]:
     
 
 #xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
-
 
 usr_input = st.chat_input("type here ...")
 

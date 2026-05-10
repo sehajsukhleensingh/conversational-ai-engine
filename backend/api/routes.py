@@ -1,9 +1,13 @@
 from fastapi import APIRouter , HTTPException , Request
 from fastapi.responses import StreamingResponse
+from fastapi import UploadFile , File , Form
 
 from backend.schema_models.request import UsrRequest
+from backend.utils.tools import _USER_FILES_PATH
 
 from langchain_core.messages import HumanMessage , BaseMessage , AIMessage
+
+import os 
 
 router = APIRouter()
 
@@ -36,7 +40,10 @@ async def chat(usr : UsrRequest , request : Request ):
         # feed to chatbot
         async def generator():
             async for msg_chnk , meta in  bot.astream(
-                {"messages":[HumanMessage(content = query)]},
+                {
+                    "messages": [HumanMessage(content=query)],
+                    "thread_id": CONFIG["configurable"]["thread_id"]
+                },
                 stream_mode="messages",
                 config=CONFIG):
 
@@ -84,3 +91,21 @@ def history(thread : str , request : Request) -> list[dict[str,str]]:
     
     return records
         
+@router.post("/upload_file")
+async def upload_file(file: UploadFile = File(...), thread_id: str = Form(...)):
+    
+    try:
+        path = os.path.join(_USER_FILES_PATH,thread_id)
+        os.makedirs(path,exist_ok=True)
+
+        save_path = os.path.join(path,file.filename)
+
+        with open(save_path,"wb") as f:
+            content = await file.read()
+            f.write(content)
+
+        return {"message":"file uploaded successfully"} 
+
+    except Exception as e:
+        raise RuntimeError("issue while uploading the file " + str(e))
+

@@ -1,5 +1,18 @@
 # Misl – Agentic Conversational AI Engine
 
+![Python](https://img.shields.io/badge/Python-3.11+-blue.svg)
+![LangChain](https://img.shields.io/badge/LangChain-Enabled-green.svg)
+![LangGraph](https://img.shields.io/badge/LangGraph-Agentic-green.svg)
+![LangSmith](https://img.shields.io/badge/LangSmith-Observability-blue)
+![FastAPI](https://img.shields.io/badge/FastAPI-Backend-009688.svg)
+![OpenAI](https://img.shields.io/badge/GPT--4o--mini-LLM-412991.svg)
+![FAISS](https://img.shields.io/badge/FAISS-VectorDB-blueviolet)
+![SQLite](https://img.shields.io/badge/SQLite-Stateful-lightgrey.svg)
+![MCP](https://img.shields.io/badge/MCP-Integrated-red.svg)
+![SSE](https://img.shields.io/badge/Streaming-SSE-orange.svg)
+![Streamlit](https://img.shields.io/badge/Streamlit-Frontend-FF4B4B.svg)
+![Docker](https://img.shields.io/badge/Docker-Ready-2496ED.svg)
+
 Misl is a stateful, multi-tool agentic AI system built using LangGraph, FastAPI, and Streamlit. It supports multi-threaded conversations with persistent memory, real-time streaming responses, and an extensible tool ecosystem including MCP integration, web search, live exchange rates, and a RAG pipeline for document Q&A.
 
 ---

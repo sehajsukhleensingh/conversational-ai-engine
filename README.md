@@ -15,7 +15,7 @@ Misl is a stateful, multi-tool agentic AI system built using LangGraph, FastAPI,
 - Connects to an MCP server via client and pulls tools dynamically at runtime
 - MCP tools are injected into the LangGraph tool node alongside custom tools
 
-### RAG Pipeline (In Progress)
+### RAG Pipeline
 - PDF ingestion using PyPDFLoader with RecursiveCharacterTextSplitter (chunk size 1200, overlap 420)
 - Embeddings via OpenAI `text-embedding-3-small`, stored in a FAISS vector store
 - Semantic similarity retrieval (top-k=4) exposed as an LLM-callable tool
@@ -151,8 +151,6 @@ streamlit run frontend/main.py
 
 ## Roadmap
 
-- [ ] Complete RAG ingestion trigger on file upload
-- [ ] LangSmith tracing and observability
 - [ ] Frontend polish and thread management UI
 - [ ] Add more MCP tool integrations
 
